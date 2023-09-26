@@ -7,7 +7,8 @@ import mongoose from 'mongoose';
 import { MONGO_URI } from './config/index';
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
-
+// Gunakan express.json() sebagai middleware
+app.use(express.json());
 app.use('/admin',adminrouter)
 app.use('/vendor',vendorroutes)
  mongoose.connect(MONGO_URI).then(result =>{
