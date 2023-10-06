@@ -33,3 +33,10 @@ export interface vendorPayload {
     name: string,
     foodType: [string]
 }
+
+export interface editVendorInputs{
+    name: string;
+    foodType: [string];
+    address: string;
+    phone: string;
+}
