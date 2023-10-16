@@ -1,2 +1,2 @@
 export * from './admincontroller'
-export * from './vendocontroller'
+export * from './vendorcontroller'

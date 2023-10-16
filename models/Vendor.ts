@@ -11,7 +11,8 @@ export interface VendorDoc extends Document{
     salt:string;
     serviceAvailable:boolean;
     coverImage:[string];
-    rating:number
+    rating:number,
+    foods:any
 }
 const VendorSchema = new Schema({
     name:{type: String,required:true},
@@ -25,7 +26,11 @@ const VendorSchema = new Schema({
     salt:{type: String,required:true},
     serviceAvailable:{type:Boolean,required:true},
     coverImage:{type: [String],required:true},
-    rating:{type:Number}
+    rating:{type:Number},
+    foods:[{
+        type:mongoose.SchemaTypes.ObjectId,
+        ref:'food'
+    }]
 },{
     toJSON:{
         transform(doc,ret){
