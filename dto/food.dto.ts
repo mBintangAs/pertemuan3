@@ -6,3 +6,7 @@ export interface createFoodInput {
     readyTime: number;
     price: number;
 }
+export interface PhotoFoodUpdate{
+    foodId:string,
+    hapus:string,
+}

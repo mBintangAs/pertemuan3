@@ -3,8 +3,10 @@ import { editVendorInputs, vendorLoginInput, vendorPayload } from '../dto/vendor
 import { findVendor } from "./admincontroller";
 import { generateSign, validatePassword } from '../utility/passwordUtility';
 import { VendorDoc } from '../models/Vendor';
-import { createFoodInput } from '../dto';
+import { PhotoFoodUpdate, createFoodInput } from '../dto';
 import { Food } from './../models/Food';
+import { unlink } from "fs/promises";
+import * as path from 'path';
 export const vendorLogin = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = <vendorLoginInput>req.body
     const vendorExist = await findVendor('', email)
@@ -105,6 +107,46 @@ export const addCoverVendor = async (req: Request, res: Response, next: NextFunc
             return res.json(result)
         } else {
             return res.json(vendor)
+        }
+    } else {
+        return res.json({ "message": "vendor not found" });
+    }
+}
+export const getFood = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user
+    if (user) {
+        const food = await Food.find({ vendorId: user._id })
+        return res.json(food)
+
+    } else {
+        return res.json({ "message": "vendor not found" });
+    }
+}
+export const updatePhotoFood = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user
+    if (user) {
+        const { foodId, hapus } = <PhotoFoodUpdate>req.body
+        if (hapus === 'true') {
+            const fotofood = await Food.findById(foodId)
+            if (!fotofood) {
+                return res.json({ "message": "Makanan tidak di temukan" });
+            }
+            try {
+                const images: string[] = fotofood.images
+                const imagesDir = path.join(__dirname, '..', 'images', 'makanan');
+                images.map(async (e) => {
+                    await unlink(`${imagesDir}/${e}`,)
+                })
+                await Food.updateOne({ _id: foodId }, { $unset: { images: 1 } })
+                return res.json({ "message": "data berhasil di hapus" })
+            } catch (err) {
+                return res.json(err);
+            }
+        } else {
+            const myimages = req.files as [Express.Multer.File];
+            const images = myimages.map((file: Express.Multer.File) => file.filename);
+            const food = await Food.updateOne({ _id: foodId }, { $push: { images } })
+            return res.json(food)
         }
     } else {
         return res.json({ "message": "vendor not found" });
