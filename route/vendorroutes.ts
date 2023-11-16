@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { addCoverVendor, getFood, getVendorProfile, updatePhotoFood, updateVendorProfile, updateVendorService, vendorLogin } from '../controller/vendorcontroller';
+import { addCoverVendor, getFood, getVendorAndFood, getVendorProfile, updatePhotoFood, updateVendorProfile, updateVendorService, vendorLogin } from '../controller/vendorcontroller';
 import { Authenticate } from './../middlewares/commonauth';
 import { addFood } from './../controller/vendorcontroller';
 import multer from 'multer';
@@ -27,6 +27,7 @@ router.get('/', (req, res) => {
     })
 })
 router.post('/login', vendorLogin)
+router.get('/vendor-food/:_id',getVendorAndFood)
 router.use(Authenticate)
 router.get('/profile', getVendorProfile)
 router.patch('/profile', updateVendorProfile)

@@ -40,3 +40,6 @@ export interface editVendorInputs{
     address: string;
     phone: string;
 }
+export interface findIdString{
+    _id:string;
+}

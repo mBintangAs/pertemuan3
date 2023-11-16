@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { editVendorInputs, vendorLoginInput, vendorPayload } from '../dto/vendor.dto';
+import { editVendorInputs, findIdString, vendorLoginInput, vendorPayload, vendorRet } from '../dto/vendor.dto';
 import { findVendor } from "./admincontroller";
 import { generateSign, validatePassword } from '../utility/passwordUtility';
-import { VendorDoc } from '../models/Vendor';
+import { Vendor, VendorDoc } from '../models/Vendor';
 import { PhotoFoodUpdate, createFoodInput } from '../dto';
 import { Food } from './../models/Food';
 import { unlink } from "fs/promises";
+import mongoose from "mongoose";
 import * as path from 'path';
 export const vendorLogin = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = <vendorLoginInput>req.body
@@ -151,4 +152,21 @@ export const updatePhotoFood = async (req: Request, res: Response, next: NextFun
     } else {
         return res.json({ "message": "vendor not found" });
     }
+}
+export const getVendorAndFood = async (req: Request<findIdString>, res: Response, next: NextFunction) => {
+
+    const {_id} = req.params
+    const vendorAndFood = await Vendor.aggregate([{
+        $match: { _id: new mongoose.Types.ObjectId(_id) }
+    }, {
+        $lookup:
+        {
+            from: 'foods',
+            localField: 'foods', // Assuming 'foods' is an array of ObjectId references
+            foreignField: '_id',
+            as: 'foodsData'
+        }
+    }])
+    
+    return res.json(vendorAndFood)
 }
