@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Request } from 'express';
+import { Request,Response } from 'express';
 import { APP_SECRET } from '../config';
 import { vendorPayload } from '../dto/vendor.dto';
 import jwt from 'jsonwebtoken';
@@ -19,11 +19,16 @@ export const generateSign = (payload: vendorPayload) => {
 }
 
 export const validateSign = async (req: Request) => {
-    const sign = req.get('Authorization');
-    if (sign) {
-        const payload = await jwt.verify(sign, APP_SECRET) as authPayload
-        req.user = payload
-        return true
+    try {
+        
+        const sign = req.get('Authorization');
+        if (sign) {
+            const payload = jwt.verify(sign, APP_SECRET) as authPayload
+            req.user = payload
+            return true
+        }
+        return false
+    } catch (e) {
+        return false
     }
-    return false
 }

@@ -6,6 +6,7 @@ import multer from 'multer';
 import randomstring from 'randomstring';
 const router = express.Router()
 
+
 const foodImageStorage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, './images/makanan'),
     filename: (req, file, cb) => cb(null, randomstring.generate(7) + ' ' + file.originalname)
@@ -36,4 +37,5 @@ router.get('/food', getFood)
 router.post('/food-photo',gambarMakanan, updatePhotoFood)
 router.post('/food', gambarMakanan, addFood)
 router.post('/cover-vendor', gambarCoverVendor, addCoverVendor)
+
 export { router as vendorroutes }

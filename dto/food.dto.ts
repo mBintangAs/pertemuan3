@@ -10,3 +10,6 @@ export interface PhotoFoodUpdate{
     foodId:string,
     hapus:string,
 }
+export interface foodNameFind{
+    name:string
+}
